@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { appActions } from 'app/app.reducer';
-import { todolistsThunks } from 'features/todolists-lists/todolists/todolists.reducer';
+import { todolistsThunks } from 'features/todolists-lists/todolists/model/todolists.reducer';
 import {
 	AddTaskArgType,
 	RemoveTaskArgType,
@@ -8,22 +8,23 @@ import {
 	todolistsApi,
 	UpdateTaskArgType,
 	UpdateTaskModelType
-} from 'features/todolists-lists/todolists/todolists.api';
+} from 'features/todolists-lists/todolists/api/todolists.api';
 import { createAppAsyncThunk} from 'common/utils';
 import { ResultCode, TaskPriorities, TaskStatuses } from 'common/enums';
 import { clearTasksAndTodolists } from 'common/actions';
+import {tasksApi} from "../api/tasks.api";
 
 
 const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[], todolistId: string }, string>
 ('tasks/fetchTasks', async (todolistId, thunkAPI) => {
-	const res = await todolistsApi.getTasks(todolistId)
+	const res = await tasksApi.getTasks(todolistId)
 	const tasks = res.data.items
 	return {tasks, todolistId}
 })
 
 const addTask = createAppAsyncThunk<{ task: TaskType }, AddTaskArgType>
 ('tasks/addTask', async (arg, {rejectWithValue}) => {
-	const res = await todolistsApi.createTask(arg)
+	const res = await tasksApi.createTask(arg)
 	if (res.data.resultCode === ResultCode.Success) {
 		const task = res.data.data.item
 		return {task}
@@ -53,7 +54,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArgType, UpdateTaskArgType>
 		...arg.domainModel
 	}
 
-	const res = await todolistsApi.updateTask(arg.todolistId, arg.taskId, apiModel)
+	const res = await tasksApi.updateTask(arg.todolistId, arg.taskId, apiModel)
 	if (res.data.resultCode === ResultCode.Success) {
 		return arg
 	} else {
@@ -63,7 +64,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArgType, UpdateTaskArgType>
 
 const removeTask = createAppAsyncThunk<RemoveTaskArgType, RemoveTaskArgType>
 ('tasks/removeTask', async (arg, {rejectWithValue}) => {
-	const res = await todolistsApi.deleteTask(arg)
+	const res = await tasksApi.deleteTask(arg)
 	if (res.data.resultCode === ResultCode.Success) {
 		return arg
 	} else {

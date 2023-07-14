@@ -1,11 +1,11 @@
 import React, { ChangeEvent, useCallback } from 'react'
 import { Checkbox, IconButton } from '@mui/material'
 import { Delete } from '@mui/icons-material'
-import { TaskType } from 'features/todolists-lists/todolists/todolists.api'
+import { TaskType } from 'features/todolists-lists/todolists/api/todolists.api'
 import { EditableSpan } from 'common/components'
 import { TaskStatuses } from 'common/enums';
 import {useActions} from "../../../../common/hooks";
-import {tasksThunks} from "../tasks.reducer";
+import {tasksThunks} from "../model/tasks.reducer";
 
 type TaskPropsType = {
 	task: TaskType
@@ -14,7 +14,7 @@ type TaskPropsType = {
 
 export const Task = React.memo((props: TaskPropsType) => {
 	const {removeTask,updateTask} = useActions(tasksThunks)
-	const removeTaskHandler = useCallback(() => removeTask({taskId: props.task.id, todolistId: props.todolistId}), [props.task.id, props.todolistId]);
+	const removeTaskHandler = () => removeTask({taskId: props.task.id, todolistId: props.todolistId});
 
 	const changeStatusHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
 		const status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New

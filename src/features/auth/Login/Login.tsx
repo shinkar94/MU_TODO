@@ -3,21 +3,23 @@ import { FormikHelpers, useFormik } from 'formik'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from '@mui/material'
-import { useAppDispatch } from 'common/hooks';
+import {useActions, useAppDispatch} from 'common/hooks';
 import { selectIsLoggedIn } from 'features/auth/auth.selectors';
 import { authThunks } from 'features/auth/auth.reducer';
 import { LoginParamsType } from 'features/auth/auth.api';
 import { ResponseType } from 'common/types';
 import s from './styles.module.css'
 
-type FormikErrorType = {
-	email?: string
-	password?: string
-	rememberMe?: boolean
-}
+type FormikErrorType = Partial<Omit<LoginParamsType, 'captcha'>>
+// 	email?: string
+// 	password?: string
+// 	rememberMe?: boolean
+// }
+
 
 export const Login = () => {
 	const dispatch = useAppDispatch()
+	const {login} = useActions(authThunks)
 
 	const isLoggedIn = useSelector(selectIsLoggedIn)
 
@@ -44,7 +46,8 @@ export const Login = () => {
 			rememberMe: false
 		},
 		onSubmit: (values, formikHelpers: FormikHelpers<LoginParamsType>) => {
-			dispatch(authThunks.login(values))
+			// dispatch(authThunks.login(values))
+			login(values)
 				.unwrap()
 				.catch((reason: ResponseType) => {
 					const {fieldsErrors} = reason

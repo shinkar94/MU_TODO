@@ -1,6 +1,6 @@
 import { instance } from 'common/api/common.api';
 import { TaskPriorities, TaskStatuses } from 'common/enums/common.enums';
-import { UpdateDomainTaskModelType } from 'features/todolists-lists/tasks/tasks.reducer';
+import { UpdateDomainTaskModelType } from 'features/todolists-lists/tasks/model/tasks.reducer';
 import { ResponseType } from 'common/types';
 
 export const todolistsApi = {
@@ -15,20 +15,6 @@ export const todolistsApi = {
 	},
 	updateTodolist(arg: UpdateTodolistTitleArgType) {
 		return instance.put<ResponseType>(`todo-lists/${arg.id}`, {title: arg.title});
-	},
-	getTasks(todolistId: string) {
-		return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`);
-	},
-	deleteTask(arg: RemoveTaskArgType) {
-		return instance.delete<ResponseType>(`todo-lists/${arg.todolistId}/tasks/${arg.taskId}`);
-	},
-	createTask(arg: AddTaskArgType) {
-		return instance.post<ResponseType<{
-			item: TaskType
-		}>>(`todo-lists/${arg.todolistId}/tasks`, {title: arg.title});
-	},
-	updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-		return instance.put<ResponseType<TaskType>>(`todo-lists/${todolistId}/tasks/${taskId}`, model);
 	}
 }
 
@@ -62,11 +48,11 @@ export type UpdateTaskModelType = {
 	deadline: string
 }
 
-type GetTasksResponse = {
-	error: string | null
-	totalCount: number
-	items: TaskType[]
-}
+// type GetTasksResponse = {
+// 	error: string | null
+// 	totalCount: number
+// 	items: TaskType[]
+// }
 
 export type AddTaskArgType = {
 	title: string
